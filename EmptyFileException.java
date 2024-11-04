@@ -2,7 +2,7 @@ import java.io.*;
 
 public class EmptyFileException extends IOException {
 
-    String path;
+    private final String path;
 
     public EmptyFileException(String message, String path) {
         super(message);

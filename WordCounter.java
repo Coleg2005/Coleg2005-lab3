@@ -9,101 +9,118 @@ public class WordCounter {
 
     public static int processText(StringBuffer input, String stop) throws InvalidStopwordException, TooSmallText {
 
+        // Sets the pattern to be pasred
         Pattern regex = Pattern.compile("[a-zA-Z_0-9]+");
+        // matches the input string to the pattern above
         Matcher regexMatcher = regex.matcher(input);
+        // has the stopword been found
         boolean found = false;
+        // wordcount
         int wordcount = 0;
 
+        // While there is another word
         while(regexMatcher.find()) {
-            String cur = regexMatcher.group();
+            // increments wordcount
             wordcount++;
-            if(wordcount > 5 && cur.equals(stop)){
+            // Sets cur to the current word in the input
+            String cur = regexMatcher.group();
+            // if cur is the stopword, break
+            if(wordcount >= 5 && cur.equals(stop)){
+                // sets found to true
                 found = true;
+                // breaks
                 break;
             }
         }
 
+        // if the wordcount is less than five, throws exception
         if(wordcount < 5) {
             throw new TooSmallText("TooSmallText: Only found " + wordcount + " words.", wordcount);
         }
 
+        // if stop is null, returns wordcount
         if(stop == null) {
             return wordcount;
         }
-
+        
+        // if stop was never found, throws exception
         if(found == false){
             throw new InvalidStopwordException("InvalidStopwordException: Couldn't find stopword: " + stop, stop);
         }
 
+        // returns wordcount
         return wordcount;
     }
 
     public static StringBuffer processFile(String path) throws EmptyFileException{
 
+        // initializes result
+        StringBuffer result = null;
+        // tries this code and looks for exceptions
         try{
+            // text is the text of the file 
             String text = Files.readString(Paths.get(path));
+            // if there is no text in the file, empty file exception is thrown
             if(text.isEmpty()) {
                 throw new EmptyFileException("This file is empty", path);
             }
-            return new StringBuffer(text);
+            // if not empty, result is the text in the file
+            result = new StringBuffer(text);
 
         } catch (IOException e) {
+            //if the exception is an empty file, throws emptyfile exception
             if(e instanceof EmptyFileException) {
                 throw (EmptyFileException) e;
             }
-            System.out.println("This file cannot be opened, please try again");
+            // if the file wasnt able to be opened, asks for another path
+            try (Scanner newinput = new Scanner(System.in)){
+                String newpath = newinput.nextLine();
+                return processFile(newpath);
+            }
         }
 
-        Scanner input = new Scanner(System.in);
-        System.out.println("Please enter a new filepath:");
-        String newpath = input.nextLine();
-
-        input.close();
-        return processFile(newpath);
-
+        // returns result
+        return result;
     }
 
     static int main(String args[]){
 
-        Scanner input = new Scanner(System.in);
-        int ret = -1;
-                
-        try{
-
-            System.out.println("Enter '1' if you are entering a file");
-            System.out.println("Enter '2' if you are entering a text");
-
-            int option = input.nextInt();
-            input.nextLine();
-
-            String stop = null;
-            if(args.length >= 2) {
-                stop = args[1];
-            }
-
-            if(option == 1) {
-                System.out.println("Please input file path");
-                String path = input.nextLine();
-                StringBuffer text = processFile(path);
-                if(text != null) {
-                    ret = processText(text, stop);
-                    System.out.println("Found" + ret + " words.");
-                }
-            } else if (option == 2) {
-                System.out.println("Please input the text");
-                String temp = input.nextLine();
-                StringBuffer text = new StringBuffer(temp);
-                ret = processText(text, stop);
-                System.out.println("Found" + ret + " words.");
-            } else {
-                System.out.println("Invalid option. Enter 1 or 2.");
-            }
-
-        } catch (EmptyFileException| TooSmallText| InvalidStopwordException e){
-            System.out.println(e.toString());
-        } finally {
-            input.close();
+        // if there are no arguments, error
+        if (args.length < 1) {
+            System.out.println("Please provide a file path as an argument");
+            return -1;
         }
+
+        // initializes ret and if there is a stopword, sets it
+        int ret = -1;
+        String stop = null;
+        if(args.length >= 2) {
+            stop = args[1];
+        }
+
+        // tries the code and looks for errors
+        try {
+            // text is the text in the file of the first args path
+            StringBuffer text = processFile(args[0]);
+            //if text is not null 
+            if(text != null) {
+                // ret is the wordcount of text upto stop
+                ret = processText(text, stop);
+                // prints the wordcounts
+                System.out.print("Found " + ret + " words.");
+            }
+        } catch (EmptyFileException e) {
+           try {
+            // for some reason here, the test cases want a toosmallexception even tho there is an empty file
+                ret = processText(new StringBuffer(""), stop);
+            } catch (InvalidStopwordException | TooSmallText e2) {
+                // prints out the type of exception
+                System.out.print(e2.toString());
+            }
+        } catch (TooSmallText | InvalidStopwordException e) {
+            System.out.print(e.toString());
+        }
+        
         return ret;
     }
     

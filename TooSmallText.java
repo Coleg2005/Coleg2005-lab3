@@ -1,6 +1,6 @@
 public class TooSmallText extends Exception{
 
-    int wordcount;
+    private final int wordcount;
 
     public TooSmallText(String message, int wordcount) {
         super(message);
@@ -8,7 +8,7 @@ public class TooSmallText extends Exception{
     }
 
     public String toString() {
-        
+
         return "TooSmallText: Only found " + wordcount + " words.";
     }
 }
