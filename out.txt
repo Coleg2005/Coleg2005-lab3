@@ -1,1 +1,4 @@
-Found 5 words.Found 9 words.TooSmallText: Only found 0 words.TooSmallText: Only found 2 words.
+Found 5 words.
+Found 9 words.
+TooSmallText: Only found 0 words.
+TooSmallText: Only found 2 words.

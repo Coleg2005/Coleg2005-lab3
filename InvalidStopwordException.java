@@ -1,8 +1,7 @@
 public class InvalidStopwordException extends Exception{
 
     private final String stop;
-    public InvalidStopwordException(String message, String stop) {
-        super(message);
+    public InvalidStopwordException(String stop) {
         this.stop = stop;
     }
 
