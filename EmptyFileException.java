@@ -4,8 +4,7 @@ public class EmptyFileException extends IOException {
 
     private final String path;
 
-    public EmptyFileException(String message, String path) {
-        super(message);
+    public EmptyFileException(String path) {
         this.path = path;
     }
 

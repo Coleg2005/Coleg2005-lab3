@@ -285,6 +285,8 @@ public class Lab3_Tester {
     } 
 
     String expected = "Found 9 words.";
+    System.out.println("12 Expected: " + expected);
+    System.out.println("12 Resulted: " + result);
     assertEquals(expected, result);
   }
 
@@ -336,6 +338,8 @@ public class Lab3_Tester {
     } 
 
     String expected = "TooSmallText: Only found 0 words.";
+    System.out.println("Expected: " + expected);
+    System.out.println("Resulted: " + result);
     assertEquals(expected, result);
   }
 

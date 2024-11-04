@@ -35,7 +35,7 @@ public class WordCounter {
 
         // if the wordcount is less than five, throws exception
         if(wordcount < 5) {
-            throw new TooSmallText("TooSmallText: Only found " + wordcount + " words.", wordcount);
+            throw new TooSmallText(wordcount);
         }
 
         // if stop is null, returns wordcount
@@ -45,7 +45,7 @@ public class WordCounter {
         
         // if stop was never found, throws exception
         if(found == false){
-            throw new InvalidStopwordException("InvalidStopwordException: Couldn't find stopword: " + stop, stop);
+            throw new InvalidStopwordException(stop);
         }
 
         // returns wordcount
@@ -62,7 +62,7 @@ public class WordCounter {
             String text = Files.readString(Paths.get(path));
             // if there is no text in the file, empty file exception is thrown
             if(text.isEmpty()) {
-                throw new EmptyFileException("This file is empty", path);
+                throw new EmptyFileException(path);
             }
             // if not empty, result is the text in the file
             result = new StringBuffer(text);
@@ -107,7 +107,7 @@ public class WordCounter {
                 // ret is the wordcount of text upto stop
                 ret = processText(text, stop);
                 // prints the wordcounts
-                System.out.print("Found " + ret + " words.");
+                System.out.println("Found " + ret + " words.");
             }
         } catch (EmptyFileException e) {
            try {
@@ -115,10 +115,10 @@ public class WordCounter {
                 ret = processText(new StringBuffer(""), stop);
             } catch (InvalidStopwordException | TooSmallText e2) {
                 // prints out the type of exception
-                System.out.print(e2.toString());
+                System.out.println(e2.toString());
             }
         } catch (TooSmallText | InvalidStopwordException e) {
-            System.out.print(e.toString());
+            System.out.println(e.toString());
         }
         
         return ret;
